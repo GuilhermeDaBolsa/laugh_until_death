@@ -1,5 +1,7 @@
 <template>
-    <div>oi</div>
+    <div class="ui container" style="padding: 12px;">
+oi
+	</div>
 </template>
 
 <script>
@@ -8,13 +10,21 @@ export default {
     mixins: {},
     data(){
         return {
+			gifNameInput: "",
         }
     },
     directives: {},
     components: {},
     computed: {},
     watch: {},
-    methods: {},
+    methods: {
+		searchGifs(gifName) {
+			if(!gifName)
+				return;
+
+			console.log(gifName);
+		}
+	},
 }
 </script>
 
