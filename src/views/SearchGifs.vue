@@ -10,6 +10,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
     props: {},
     mixins: {},
@@ -23,11 +25,18 @@ export default {
     computed: {},
     watch: {},
     methods: {
-		searchGifs(gifName) {
+		async searchGifs(gifName) {
 			if(!gifName)
 				return;
 
-			console.log(gifName);
+            const gifList = await axios.get(
+				"https://api.giphy.com/v1/gifs/search?" +
+				"api_key=" + "STZdG71c7H6T5YF4RefqSFm6IFMNbKRu" +
+                "&q=" + gifName +
+                "&limit=25" +
+                "&offset=0" +//limit * currentPage
+                "&lang=" + "pt"
+			)
 		}
 	},
 }
