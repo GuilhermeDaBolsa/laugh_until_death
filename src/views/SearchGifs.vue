@@ -6,11 +6,21 @@
 			<input v-model="gifNameInput" type="text" placeholder="Ex.:  estrela negra" @keydown.enter="searchGifs(gifNameInput)">
 			<div class="ui button" @click="searchGifs(gifNameInput)">Buscar</div>
 		</div>
+
+		<div class="ui three column doubling stackable padded grid" style="padding: 12px;">
+  			<div class="column" v-for="gif in searchedGifs" :key="gif.id">
+				<GifCard 
+					:title="removeCreatorFromGifTitle(gif.title)"
+					:creator="gif.username"
+					:gifSrc="gif.images.downsized.url"
+				/>
+  			</div>
+		</div>
 	</div>
 </template>
 
 <script>
-import axios from 'axios';
+import GifCard from '@/components/GifCard.vue';
 
 export default {
     props: {},
@@ -21,22 +31,34 @@ export default {
         }
     },
     directives: {},
-    components: {},
-    computed: {},
+    components: {
+		GifCard
+	},
+    computed: {
+		searchedGifs: {
+			get(){
+				return this.$store.getters["SearchGifs/searchedGifs"];
+			}
+		}
+	},
     watch: {},
     methods: {
-		async searchGifs(gifName) {
-			if(!gifName)
+		removeCreatorFromGifTitle(gifTitle) {
+			const lastOccurrenceOfCreatorSeparator = gifTitle.lastIndexOf("GIF by");
+
+			if (lastOccurrenceOfCreatorSeparator != -1) {
+				return gifTitle.substring(0, lastOccurrenceOfCreatorSeparator);
+			}
+			return gifTitle;
+		},
+		async searchGifs(searchInput) {
+			if(!searchInput)
 				return;
 
-            const gifList = await axios.get(
-				"https://api.giphy.com/v1/gifs/search?" +
-				"api_key=" + "STZdG71c7H6T5YF4RefqSFm6IFMNbKRu" +
-                "&q=" + gifName +
-                "&limit=25" +
-                "&offset=0" +//limit * currentPage
-                "&lang=" + "pt"
-			)
+			const response = await this.$store.dispatch("SearchGifs/getGifsFromGiphy", searchInput);
+			console.log(response);
+
+			this.$store.commit("SearchGifs/addGifsIntoSearchedGifs", response.data);
 		}
 	},
 }
