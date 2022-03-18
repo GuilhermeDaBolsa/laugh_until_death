@@ -1,5 +1,9 @@
 <template>
     <div class="ui container" style="padding: 12px;">
+		<nav>
+      <router-link to="/">Encontrar GIF</router-link> |
+      <router-link to="/saved">Meus GIFs</router-link>
+    </nav>
 oi
 	</div>
 </template>

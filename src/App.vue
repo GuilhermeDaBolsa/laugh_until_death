@@ -1,11 +1,7 @@
 <template>
-  <div id="app" style="max-width: 780px; margin: auto;">
-    <nav>
-      <router-link to="/">Encontrar GIF</router-link> |
-      <router-link to="/saved">Meus GIFs</router-link>
-    </nav>
-    <router-view/>
-  </div>
+	<div id="app" style="max-width: 780px; height: 100vh; margin: auto;">
+		<router-view/>
+	</div>
 </template>
 
 <style>
@@ -18,7 +14,7 @@
 }
 
 nav {
-  padding: 30px;
+  padding: 12px;
 }
 
 nav a {
