@@ -5,21 +5,14 @@
 		</div>
 
 		<div class="content">
+			<span class="right floated">
+				<i class="large heart red like icon" :class="liked ? '' : 'outline'" @click="changeGifLikeStatus"></i>
+			</span>
 			<span class="header">{{title}}</span>
 			<div class="meta">
 				<span class="date">{{creator}}</span>
 			</div>
-			<!-- <div class="description">
-				Kristy is an art director living in New York.
-			</div> -->
 		</div>
-
-		<!-- <div class="extra content">
-			<a>
-				<i class="user icon"></i>
-				22 Friends
-			</a>
-		</div> -->
 	</a>
 </template>
 
@@ -34,6 +27,9 @@ export default {
 		},
 		creator: {
 			type: String
+		},
+		liked: {
+			type: Boolean
 		}
 	},
     mixins: {},
@@ -45,7 +41,16 @@ export default {
     components: {},
     computed: {},
     watch: {},
-    methods: {},
+    methods: {
+		changeGifLikeStatus() {
+			const newLikeStatus = !this.liked;
+
+			if(newLikeStatus) 
+				this.$emit("like");
+			else
+				this.$emit("unlike");
+		}
+	},
 }
 </script>
 
