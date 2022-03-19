@@ -1,5 +1,5 @@
 <template>
-	<div style="display: flex; flex-direction: column; flex: 1; justify-content: center; align-items: center; font-size: 1.5rem;">
+	<div class="flexBox">
 		<slot></slot>
 	</div>
 </template>
@@ -21,4 +21,13 @@ export default {
 </script>
 
 <style scoped>
+.flexBox {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	justify-content: center;
+	align-items: center;
+	font-size: 1.5rem;
+	line-height: 2rem;
+}
 </style>

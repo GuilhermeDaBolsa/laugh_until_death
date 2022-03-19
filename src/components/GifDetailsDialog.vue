@@ -1,15 +1,12 @@
 <template>
-	<div class="ui small modal" :class="value ? 'active' : ''">
-		<i class="close icon" @click="close"></i>
-		<div class="header">
-			Modal Title
-		</div>
-		<div class="image content">
-			<div class="image">
-				<img class="ui fluid image" :src="gifSrc">
+	<div class="ui tiny modal">
+		<div class="image content" style="flex-direction: column;">
+			<div class="image" style="margin-bottom: 12px;">
+				<img class="ui fluid image" :src="gifSrc" style="max-height: 70vh;">
 			</div>
-			<div class="description">
-				A description can appear on the right
+			<div>
+				<div class="ui header">Title: {{title}}</div>
+				<div>Author: {{creator}}</div>
 			</div>
 		</div>
 		<div class="actions">
@@ -19,6 +16,9 @@
 			<button class="circular ui icon button" @click="saveGif">
 				<i class="save icon"></i>
 			</button>
+			<button class="circular ui icon button" @click="close">
+				<i class="close icon"></i>
+			</button>
 		</div>
 	</div>
 </template>
@@ -26,10 +26,6 @@
 <script>
 export default {
     props: {
-		value: {
-			type: Boolean,
-			default: false
-		},
 		title: {
 			type: String
 		},
@@ -51,7 +47,7 @@ export default {
     watch: {},
     methods: {
 		close() {
-			this.$emit("input", false);
+			$('.tiny.modal').modal('hide');
 		},
 		saveGif() {
 			this.$emit("saveGif");
@@ -61,4 +57,7 @@ export default {
 </script>
 
 <style scoped>
+.modal {
+	margin-top: 0px !important;
+}
 </style>

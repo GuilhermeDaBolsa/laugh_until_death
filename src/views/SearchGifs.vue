@@ -40,7 +40,7 @@
 		/>
 
 		<FlexBox v-else>
-			<div>imagem bunitinha identificando gif</div>
+			Digite algo no campo acima e precione buscar para começar a utilizar 😎
 		</FlexBox>
 
 		<div v-show="loadingMoreGifs">
@@ -53,7 +53,6 @@
 		</div>
 
 		<GifDetailsDialog
-			v-model="showGifDetailsDialog"
 			:title="removeCreatorFromGifTitle(selectedGif.title)"
 			:creator="selectedGif.username"
 			:gifSrc="selectedGif.images.downsized.url"
@@ -82,7 +81,6 @@ export default {
 			lastGifSearchedInput: "",
 			yetToComeGifs: -1,
 
-			showGifDetailsDialog: false,
 			selectedGif: {
 				title: "",
 				username: "",
@@ -110,7 +108,8 @@ export default {
 		
 		showGifDetails(gif){
 			this.selectedGif = gif;
-			this.showGifDetailsDialog = true;		
+			
+			$('.modal').modal('show');
 		},
 		async saveGif(gif){
 			const response = await this.$store.dispatch("SavedGifs/saveGif", {userId: 1, gif});
