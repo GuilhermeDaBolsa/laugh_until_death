@@ -49,7 +49,7 @@ export default {
     components: {},
     computed: {},
     watch: {
-		value() {
+		gif() {
 			if(this.gif != undefined) {
 				this.title = this.gif.title ? this.removeCreatorFromGifTitle(this.gif.title) : "N/A";
 				this.creator = this.gif.username ?? "N/A";
