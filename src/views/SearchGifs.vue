@@ -40,7 +40,7 @@
 		/>
 
 		<FlexBox v-else>
-			<div>o</div>
+			<div>imagem bunitinha identificando gif</div>
 		</FlexBox>
 
 		<div v-show="loadingMoreGifs">
@@ -66,6 +66,7 @@
 import FlexBox from '@/components/FlexBox.vue';
 import GifCardList from '@/components/GifCardList.vue';
 import GifDetailsDialog from '@/components/GifDetailsDialog.vue';
+import { removeCreatorFromGifTitle } from "@/utils/gif"
 
 export default {
     props: {},
@@ -104,14 +105,9 @@ export default {
 	},
     watch: {},
     methods: {
-		removeCreatorFromGifTitle(gifTitle) {
-			const lastOccurrenceOfCreatorSeparator = gifTitle.lastIndexOf("GIF by");
+		removeCreatorFromGifTitle,
 
-			if (lastOccurrenceOfCreatorSeparator != -1) {
-				return gifTitle.substring(0, lastOccurrenceOfCreatorSeparator);
-			}
-			return gifTitle;
-		},
+		
 		showGifDetails(gif){
 			this.selectedGif = gif;
 			this.showGifDetailsDialog = true;		

@@ -18,6 +18,7 @@
 
 <script>
 import GifCard from '@/components/GifCard.vue';
+import { removeCreatorFromGifTitle } from "@/utils/gif"
 
 export default {
     props: {
@@ -42,14 +43,8 @@ export default {
 		}
 	},
     methods: {
-		removeCreatorFromGifTitle(gifTitle) {
-			const lastOccurrenceOfCreatorSeparator = gifTitle.lastIndexOf("GIF by");
+		removeCreatorFromGifTitle,
 
-			if (lastOccurrenceOfCreatorSeparator != -1) {
-				return gifTitle.substring(0, lastOccurrenceOfCreatorSeparator);
-			}
-			return gifTitle;
-		},
 		bottomScrollCheck({ target: { scrollTop, clientHeight, scrollHeight }}) {
 			if (scrollTop + clientHeight > scrollHeight - 40) { //40 is an error margin
 				this.$emit("reachedBottomOfList");
