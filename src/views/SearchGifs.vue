@@ -10,13 +10,13 @@
 		<div class="ui fluid action input" style="margin-bottom: 12px;">
 			<input 
 				ref="gifNameInputField"
-				v-model="gifNameInput"
+				v-model="gifSearchInput"
 				type="text" 
 				placeholder="Ex.:  estrela negra" 
-				@keydown.enter="makeNewGifSearch(gifNameInput)"
+				@keydown.enter="makeNewGifSearch(gifSearchInput)"
 			>
 
-			<div class="ui button" @click="makeNewGifSearch(gifNameInput)">Buscar</div>
+			<div class="ui button" @click="makeNewGifSearch(gifSearchInput)">Buscar</div>
 		</div>
 
 		<FlexBox v-if="loadingNewGifs">
@@ -28,7 +28,7 @@
 			<i class="large red exclamation triangle icon"></i> {{errorMessageLoadingNewGifs}}
 		</FlexBox>
 
-		<FlexBox v-else-if="searchedGifs.length == 0 && lastSearchedInput != ''">
+		<FlexBox v-else-if="searchedGifs.length == 0 && lastGifSearchedInput != ''">
 			<div>Não encontrei nenhum gif 😢</div>
 		</FlexBox>
 
@@ -44,6 +44,15 @@
 		<FlexBox v-else>
 			<div>o</div>
 		</FlexBox>
+
+		<div v-show="loadingMoreGifs">
+			<div class="ui active inline loader"></div>
+			<div>Carregando...</div>
+		</div>
+
+		<div v-show="errorMessageLoadingMoreGifs">
+			<i class="large red exclamation triangle icon"></i> {{errorMessageLoadingMoreGifs}}
+		</div>
 
 		<!-- TODO CREATE OTHER COMPONENT -->
 		<!-- <div class="ui active modal">
@@ -82,8 +91,9 @@ export default {
 			errorMessageLoadingNewGifs: "",
 			errorMessageLoadingMoreGifs: "",
 
-			gifNameInput: "",
-			lastSearchedInput: "",
+			gifSearchInput: "",
+			lastGifSearchedInput: "",
+			yetToComeGifs: -1,
         }
     },
     directives: {},
@@ -115,18 +125,21 @@ export default {
 			if(gifSearchInput.length > 0) {
 				this.loadingNewGifs = true;
 
-				this.lastSearchedInput = gifSearchInput;
+				this.lastGifSearchedInput = gifSearchInput;
 				this.errorMessageLoadingNewGifs = "";
+				this.errorMessageLoadingMoreGifs = "";
 				
 				const response = await this.$store.dispatch("SearchGifs/getGifsFromGiphy", {
 					gifSearchInput,
-					gifsQuantity: 2,
-					searchOffset: this.searchedGifs.length
+					gifsQuantity: 25,
+					searchOffset: 0
 				});
 
 				if(response.isError) {
 					this.errorMessageLoadingNewGifs = response.errorMessage;
 				} else {
+					const pag = response.pagination;
+					this.yetToComeGifs = pag.total_count - (pag.offset + pag.count);
 					this.$store.commit("SearchGifs/setSearchedGifs", response.data);
 				}
 
@@ -134,20 +147,23 @@ export default {
 			}
 		},
 		async loadMoreGifs() {
-			if(this.loadingMoreGifs)	//prevent several load more gifs call
+			//prevent several load more gifs call
+			if(this.loadingMoreGifs || this.errorMessageLoadingMoreGifs || this.yetToComeGifs == 0)
 				return;
 
 			this.loadingMoreGifs = true;
 
 			const response = await this.$store.dispatch("SearchGifs/getGifsFromGiphy", {
-				gifSearchInput: this.lastSearchedInput,
-				gifsQuantity: 2,
+				gifSearchInput: this.lastGifSearchedInput,
+				gifsQuantity: 25,
 				searchOffset: this.searchedGifs.length
 			});
 
 			if(response.isError) {
 				this.errorMessageLoadingMoreGifs = response.errorMessage;
 			} else {
+				const pag = response.pagination;
+				this.yetToComeGifs = pag.total_count - (pag.offset + pag.count);
 				this.$store.commit("SearchGifs/addGifsIntoSearchedGifs", response.data);
 			}
 
