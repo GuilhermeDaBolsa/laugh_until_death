@@ -8,9 +8,9 @@
 				<div style="display: flex;">
 					<div class="ui header" style="margin: auto 0; margin-right: 6px;">Title: </div>
 
-					<div class="edit ui small right labeled left input" :data-title="popupMessage">
+					<div class="ui small right labeled left input">
 						<input v-model="title" type="text">
-						<a class="ui tag label" @click="editGif">
+						<a class="edit ui tag label" :data-title="popupMessage" @click="editGif">
 							Editar
 						</a>
 					</div>

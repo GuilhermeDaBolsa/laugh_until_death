@@ -5,7 +5,7 @@
 			<router-link to="/saved">Meus GIFs</router-link>
 		</nav>
 
-		<div class="ui huge header">Meus GIFs</div>
+		<div class="ui huge inverted header">Meus GIFs</div>
 
 		<FlexBox v-if="loading">
 			<div class="ui active inline loader"></div>

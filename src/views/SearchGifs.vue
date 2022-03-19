@@ -5,7 +5,7 @@
 			<router-link to="/saved">Meus GIFs</router-link>
 		</nav>
 
-		<div class="ui huge header">Procure por gifs</div>
+		<div class="ui huge inverted header">Procure por gifs</div>
 
 		<div class="ui fluid action inverted transparent input" style="margin-bottom: 12px;">
 			<input 
