@@ -52,12 +52,7 @@
 			<i class="large red exclamation triangle icon"></i> {{errorMessageLoadingMoreGifs}}
 		</div>
 
-		<GifDetailsDialog
-			:title="removeCreatorFromGifTitle(selectedGif.title)"
-			:creator="selectedGif.username"
-			:gifSrc="selectedGif.images.downsized.url"
-			@saveGif="saveGif(selectedGif)"
-		/>
+		<GifDetailsDialog :value="showGifDetailsDialog" :gif="selectedGif" @input="closeGifDetails"/>
 	</div>
 </template>
 
@@ -65,7 +60,6 @@
 import FlexBox from '@/components/FlexBox.vue';
 import GifCardList from '@/components/GifCardList.vue';
 import GifDetailsDialog from '@/components/GifDetailsDialog.vue';
-import { removeCreatorFromGifTitle } from "@/utils/gif"
 
 export default {
     props: {},
@@ -81,11 +75,8 @@ export default {
 			lastGifSearchedInput: "",
 			yetToComeGifs: -1,
 
-			selectedGif: {
-				title: "",
-				username: "",
-				images: { downsized: { url: ""}}
-			},
+			showGifDetailsDialog: false,
+			selectedGif: {},
         }
     },
     directives: {},
@@ -103,17 +94,14 @@ export default {
 	},
     watch: {},
     methods: {
-		removeCreatorFromGifTitle,
-
-		
 		showGifDetails(gif){
 			this.selectedGif = gif;
-			
+			this.showGifDetailsDialog = true;
 			$('.modal').modal('show');
 		},
-		async saveGif(gif){
-			const response = await this.$store.dispatch("SavedGifs/saveGif", {userId: 1, gif});
-			console.log(response);
+		closeGifDetails(){
+			this.showGifDetailsDialog = false;
+			$('.tiny.modal').modal('hide');
 		},
 		async makeNewGifSearch(gifSearchInput) {
 			this.$refs.gifNameInputField.blur();
