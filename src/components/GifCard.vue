@@ -5,7 +5,7 @@
 		</div>
 
 		<div class="content">
-			<span class="header">{{title}}</span>
+			<span class="header" style="text-overflow: ellipsis; overflow: hidden;">{{title}}</span>
 			<div class="meta">
 				<span class="date">{{creator}}</span>
 			</div>

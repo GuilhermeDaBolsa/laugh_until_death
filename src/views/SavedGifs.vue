@@ -1,5 +1,5 @@
 <template>
-    <div class="ui container" style="padding: 12px;">
+    <div class="ui container" style="display: flex; flex-direction: column; height: 100%; padding: 12px;">
 		<nav>
 			<router-link to="/">Encontrar GIF</router-link> |
 			<router-link to="/saved">Meus GIFs</router-link>
@@ -17,21 +17,23 @@
 		</FlexBox>
 
 		<FlexBox v-else-if="savedGifs.length == 0">
-			<div>Você ainda não salvou nenhum GIF (emoji de alguma coisa)</div>
+			<div>Você ainda não salvou nenhum GIF 🕸️👻🕸️</div>
 		</FlexBox>
 
 		<GifCardList
 			v-else
 			:gifsList="savedGifs"
-			@gifSelect="1==1"
+			@gifSelect="showGifDetails"
 		/>
 
+		<SavedGifDetailsDialog class="savedGifs" :value="showGifDetailsDialog" :gif="selectedGif" @input="closeGifDetails"/>
 	</div>
 </template>
 
 <script>
 import FlexBox from '@/components/FlexBox.vue';
 import GifCardList from '@/components/GifCardList.vue';
+import SavedGifDetailsDialog from '@/components/SavedGifDetailsDialog.vue';
 
 export default {
     props: {},
@@ -40,12 +42,16 @@ export default {
         return {
 			loading: false,
 			errorMessage: "",
+
+			showGifDetailsDialog: false,
+			selectedGif: {},
         }
     },
     directives: {},
     components: {
 		FlexBox,
-		GifCardList
+		GifCardList,
+		SavedGifDetailsDialog
 	},
     computed: {
 		savedGifs: {
@@ -55,7 +61,17 @@ export default {
 		}
 	},
     watch: {},
-    methods: {},
+    methods: {
+		showGifDetails(gif){
+			this.selectedGif = gif;
+			this.showGifDetailsDialog = true;
+			$('.savedGifs').modal('show');
+		},
+		closeGifDetails(){
+			this.showGifDetailsDialog = false;
+			$('.savedGifs').modal('hide');
+		},
+	},
 }
 </script>
 

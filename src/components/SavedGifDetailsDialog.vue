@@ -5,7 +5,17 @@
 				<img class="ui fluid image" :src="src" style="max-height: 70vh;">
 			</div>
 			<div>
-				<div class="ui header">Title: {{title}}</div>
+				<div style="display: flex;">
+					<div class="ui header" style="margin: auto 0; margin-right: 6px;">Title: </div>
+
+					<div class="edit ui small right labeled left input" :data-title="popupMessage">
+						<input v-model="title" type="text">
+						<a class="ui tag label" @click="editGif">
+							Editar
+						</a>
+					</div>
+				</div>
+
 				<div>Author: {{creator}}</div>
 			</div>
 		</div>
@@ -13,8 +23,8 @@
 			<button class="share circular ui icon button" :data-title="popupMessage" @click="shareGif">
 				<i class="share alternate icon"></i>
 			</button>
-			<button class="save circular ui icon button" :data-title="popupMessage" @click="saveGif">
-				<i class="save icon"></i>
+			<button class="save circular ui icon button" :data-title="popupMessage" @click="removeGif">
+				<i class="trash alternate icon"></i>
 			</button>
 			<button class="circular ui icon button" @click="close">
 				<i class="close icon"></i>
@@ -63,19 +73,25 @@ export default {
 		close() {
 			this.$emit("input", false);
 		},
+		async editGif() {
+			this.popupMessage = "Salvando...";
+			const response = await this.$store.dispatch("SavedGifs/editSavedGif", { userId: undefined, gif: this.gif, newTitle: this.title });
+			this.popupMessage = response.message;
+		},
 		async shareGif() {
 			navigator.clipboard.writeText(this.src);
 			this.popupMessage = "Copiado!";
 		},
-		async saveGif(){
+		async removeGif(){
 			this.popupMessage = "Salvando...";
-			const response = await this.$store.dispatch("SavedGifs/saveGif", { userId: undefined, gif: this.gif });
+			const response = await this.$store.dispatch("SavedGifs/removeSavedGif", { userId: undefined, gif: this.gif });
 			this.popupMessage = response.message;
 		},
 	},
 	mounted() {
 		$('.share').popup({ on: 'click' });
 		$('.save').popup({ on: 'click' });
+		$('.edit').popup({ on: 'click' });
 	}
 }
 </script>

@@ -52,7 +52,7 @@
 			<i class="large red exclamation triangle icon"></i> {{errorMessageLoadingMoreGifs}}
 		</div>
 
-		<GifDetailsDialog :value="showGifDetailsDialog" :gif="selectedGif" @input="closeGifDetails"/>
+		<GifDetailsDialog class="searchGif" :value="showGifDetailsDialog" :gif="selectedGif" @input="closeGifDetails"/>
 	</div>
 </template>
 
@@ -97,11 +97,11 @@ export default {
 		showGifDetails(gif){
 			this.selectedGif = gif;
 			this.showGifDetailsDialog = true;
-			$('.modal').modal('show');
+			$('.searchGif').modal('show');
 		},
 		closeGifDetails(){
 			this.showGifDetailsDialog = false;
-			$('.tiny.modal').modal('hide');
+			$('.searchGif').modal('hide');
 		},
 		async makeNewGifSearch(gifSearchInput) {
 			this.$refs.gifNameInputField.blur();
