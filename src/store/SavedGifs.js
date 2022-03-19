@@ -18,21 +18,31 @@ export default {
 			state.savedGifs.push(gif);
 		},
 		removeSavedGif(state, gifIndex) {
-			if (gifIndex != -1) 
-				state.savedGifs.splice(gifIndex, 1);
+			state.savedGifs.splice(gifIndex, 1);
 		}
 	},
 	actions: {
 		getSavedGifs(store, userId) {
 			//get saved gifsIds from user
-			
-			//get hole gif object from giphy and store it into savedGifs
 		},
 		saveGif(store, {userId, gif}){
+			//API CALL SAVING GIF OBJECT FOR CERTAIN USERID
 
+			const gifIndex = store.state.savedGifs.findIndex(g => g.id == gif.id);
+			if(gifIndex == -1) {
+				store.commit("saveGif", gif);
+				return {success: true, message: "GIF salvo"};
+			}
+			return {success: false, message: "GIF já está salvo"};
 		},
 		removeSavedGif(store, {userId, gif}) {
 			const gifIndex = store.state.savedGifs.findIndex(g => g.id == gif.id);
+
+			if(gifIndex != -1) {
+				store.commit("removeSavedGif", gifIndex);
+				return {success: true, message: "GIF removido"};
+			}
+			return {success: false, message: "GIF não encontrado"};
 		}
 	},
 	modules: {
