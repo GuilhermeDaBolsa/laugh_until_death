@@ -36,8 +36,6 @@
 			v-else-if="searchedGifs.length > 0"
 			:gifsList="searchedGifs"
 			@gifSelect="showGifDetails"
-			@gifLike="likeGif"
-			@gifUnlike="unlikeGif"
 			@reachedBottomOfList="loadMoreGifs"
 		/>
 
@@ -54,32 +52,20 @@
 			<i class="large red exclamation triangle icon"></i> {{errorMessageLoadingMoreGifs}}
 		</div>
 
-		<!-- TODO CREATE OTHER COMPONENT -->
-		<!-- <div class="ui active modal">
-			<i class="close icon"></i>
-			<div class="header">
-				Modal Title
-			</div>
-			<div class="image content">
-				<div class="image">
-					An image can appear on left or an icon
-				</div>
-				<div class="description">
-					A description can appear on the right
-				</div>
-			</div>
-			<div class="actions">
-				<div class="ui button">Cancel</div>
-				<div class="ui button">OK</div>
-			</div>
-		</div> -->
-
+		<GifDetailsDialog
+			v-model="showGifDetailsDialog"
+			:title="removeCreatorFromGifTitle(selectedGif.title)"
+			:creator="selectedGif.username"
+			:gifSrc="selectedGif.images.downsized.url"
+			@saveGif="saveGif(selectedGif)"
+		/>
 	</div>
 </template>
 
 <script>
 import FlexBox from '@/components/FlexBox.vue';
 import GifCardList from '@/components/GifCardList.vue';
+import GifDetailsDialog from '@/components/GifDetailsDialog.vue';
 
 export default {
     props: {},
@@ -94,12 +80,20 @@ export default {
 			gifSearchInput: "",
 			lastGifSearchedInput: "",
 			yetToComeGifs: -1,
+
+			showGifDetailsDialog: false,
+			selectedGif: {
+				title: "",
+				username: "",
+				images: { downsized: { url: ""}}
+			},
         }
     },
     directives: {},
     components: {
         FlexBox,
-        GifCardList
+        GifCardList,
+        GifDetailsDialog
 	},
     computed: {
 		searchedGifs: {
@@ -110,14 +104,21 @@ export default {
 	},
     watch: {},
     methods: {
+		removeCreatorFromGifTitle(gifTitle) {
+			const lastOccurrenceOfCreatorSeparator = gifTitle.lastIndexOf("GIF by");
+
+			if (lastOccurrenceOfCreatorSeparator != -1) {
+				return gifTitle.substring(0, lastOccurrenceOfCreatorSeparator);
+			}
+			return gifTitle;
+		},
 		showGifDetails(gif){
-			console.log(gif);
+			this.selectedGif = gif;
+			this.showGifDetailsDialog = true;		
 		},
-		likeGif(gif){
-			console.log(gif);
-		},
-		unlikeGif(gif){
-			console.log(gif);
+		async saveGif(gif){
+			const response = await this.$store.dispatch("SavedGifs/saveGif", {userId: 1, gif});
+			console.log(response);
 		},
 		async makeNewGifSearch(gifSearchInput) {
 			this.$refs.gifNameInputField.blur();
@@ -147,7 +148,7 @@ export default {
 			}
 		},
 		async loadMoreGifs() {
-			//prevent several load more gifs call
+			//prevent several load more gifs calls
 			if(this.loadingMoreGifs || this.errorMessageLoadingMoreGifs || this.yetToComeGifs == 0)
 				return;
 
