@@ -19,40 +19,68 @@
 			<div class="ui button" @click="makeNewGifSearch(gifNameInput)">Buscar</div>
 		</div>
 
-		<FlexBox v-if="loading">
+		<FlexBox v-if="loadingNewGifs">
 			<div class="ui active inline loader"></div>
 			<div>Carregando...</div>
 		</FlexBox>
 
-		<FlexBox v-else-if="errorMessage" style="flex-direction: row;">
-			<i class="large red exclamation triangle icon"></i> {{errorMessage}}
+		<FlexBox v-else-if="errorMessageLoadingNewGifs" style="flex-direction: row;">
+			<i class="large red exclamation triangle icon"></i> {{errorMessageLoadingNewGifs}}
 		</FlexBox>
 
-		<div v-else class="ui three column doubling stackable padded grid" style="padding: 12px; overflow: auto;">
-  			<div class="column" v-for="gif in searchedGifs" :key="gif.id">
-				<GifCard 
-					:title="removeCreatorFromGifTitle(gif.title)"
-					:creator="gif.username"
-					:gifSrc="gif.images.downsized.url"
-					@like="likeGif(gif.id)"
-					@unlike="unlikeGif(gif.id)"
-				/>
-  			</div>
-		</div>
+		<FlexBox v-else-if="searchedGifs.length == 0 && lastSearchedInput != ''">
+			<div>Não encontrei nenhum gif 😢</div>
+		</FlexBox>
+
+		<GifCardList
+			v-else-if="searchedGifs.length > 0"
+			:gifsList="searchedGifs"
+			@gifSelect="showGifDetails"
+			@gifLike="likeGif"
+			@gifUnlike="unlikeGif"
+			@reachedBottomOfList="loadMoreGifs"
+		/>
+
+		<FlexBox v-else>
+			<div>o</div>
+		</FlexBox>
+
+		<!-- TODO CREATE OTHER COMPONENT -->
+		<!-- <div class="ui active modal">
+			<i class="close icon"></i>
+			<div class="header">
+				Modal Title
+			</div>
+			<div class="image content">
+				<div class="image">
+					An image can appear on left or an icon
+				</div>
+				<div class="description">
+					A description can appear on the right
+				</div>
+			</div>
+			<div class="actions">
+				<div class="ui button">Cancel</div>
+				<div class="ui button">OK</div>
+			</div>
+		</div> -->
+
 	</div>
 </template>
 
 <script>
-import GifCard from '@/components/GifCard.vue';
 import FlexBox from '@/components/FlexBox.vue';
+import GifCardList from '@/components/GifCardList.vue';
 
 export default {
     props: {},
     mixins: {},
     data(){
         return {
-			loading: false,
-			errorMessage: "",
+			loadingNewGifs: false,
+			loadingMoreGifs: false,
+			errorMessageLoadingNewGifs: "",
+			errorMessageLoadingMoreGifs: "",
 
 			gifNameInput: "",
 			lastSearchedInput: "",
@@ -60,8 +88,8 @@ export default {
     },
     directives: {},
     components: {
-		GifCard,
-        FlexBox
+        FlexBox,
+        GifCardList
 	},
     computed: {
 		searchedGifs: {
@@ -72,44 +100,59 @@ export default {
 	},
     watch: {},
     methods: {
-		removeCreatorFromGifTitle(gifTitle) {
-			const lastOccurrenceOfCreatorSeparator = gifTitle.lastIndexOf("GIF by");
-
-			if (lastOccurrenceOfCreatorSeparator != -1) {
-				return gifTitle.substring(0, lastOccurrenceOfCreatorSeparator);
-			}
-			return gifTitle;
+		showGifDetails(gif){
+			console.log(gif);
 		},
-		likeGif(gifId){
-
+		likeGif(gif){
+			console.log(gif);
 		},
-		unlikeGif(gifId){
-
+		unlikeGif(gif){
+			console.log(gif);
 		},
 		async makeNewGifSearch(gifSearchInput) {
 			this.$refs.gifNameInputField.blur();
 
 			if(gifSearchInput.length > 0) {
-				this.errorMessage = "";
+				this.loadingNewGifs = true;
+
 				this.lastSearchedInput = gifSearchInput;
-
-				this.loading = true;
-
-				const response = await this.getGifsFromGiphy(gifSearchInput, 25, 0); //TODO PARAMETROS
-				console.log(response);
+				this.errorMessageLoadingNewGifs = "";
+				
+				const response = await this.$store.dispatch("SearchGifs/getGifsFromGiphy", {
+					gifSearchInput,
+					gifsQuantity: 2,
+					searchOffset: this.searchedGifs.length
+				});
 
 				if(response.isError) {
-					this.errorMessage = response.errorMessage;
+					this.errorMessageLoadingNewGifs = response.errorMessage;
 				} else {
 					this.$store.commit("SearchGifs/setSearchedGifs", response.data);
 				}
 
-				this.loading = false;
+				this.loadingNewGifs = false;
 			}
 		},
-		async getGifsFromGiphy(gifSearchInput, gifsQuantity, searchOffset) {
-			return await this.$store.dispatch("SearchGifs/getGifsFromGiphy", { gifSearchInput, gifsQuantity, searchOffset });
-		}
+		async loadMoreGifs() {
+			if(this.loadingMoreGifs)	//prevent several load more gifs call
+				return;
+
+			this.loadingMoreGifs = true;
+
+			const response = await this.$store.dispatch("SearchGifs/getGifsFromGiphy", {
+				gifSearchInput: this.lastSearchedInput,
+				gifsQuantity: 2,
+				searchOffset: this.searchedGifs.length
+			});
+
+			if(response.isError) {
+				this.errorMessageLoadingMoreGifs = response.errorMessage;
+			} else {
+				this.$store.commit("SearchGifs/addGifsIntoSearchedGifs", response.data);
+			}
+
+			this.loadingMoreGifs = false;
+		},
 	},
 }
 </script>

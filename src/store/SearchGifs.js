@@ -16,7 +16,7 @@ export default {
 			state.searchedGifs = gifs;
 		},
 		addGifsIntoSearchedGifs(state, gifs) {
-			for (const gif of gifs) {
+			for (const gif of gifs) { //TODO REVER SE FOR
 				state.searchedGifs.push(gif);
 			}
 		}
