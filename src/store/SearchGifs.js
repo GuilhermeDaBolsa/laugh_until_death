@@ -16,7 +16,7 @@ export default {
 			state.searchedGifs = gifs;
 		},
 		addGifsIntoSearchedGifs(state, gifs) {
-			for (const gif of gifs) { //TODO REVER ESSE FOR
+			for (const gif of gifs) { //TODO MAYBE THIS WAY IS GOOD FOR ANIMATIONS
 				state.searchedGifs.push(gif);
 			}
 		}
@@ -25,7 +25,7 @@ export default {
 		async getGifsFromGiphy(store, {gifSearchInput, gifsQuantity, searchOffset}) {
 			return await axios.get(
 				"https://api.giphy.com/v1/gifs/search?" +
-				"api_key=" + "STZdG71c7H6T5YF4RefqSFm6IFMNbKRu" +
+				"api_key=" + "STZdG71c7H6T5YF4RefqSFm6IFMNbKRu" + //TODO REMEMBER TO PUT API KEY IN ENV FILE
                 "&q=" + gifSearchInput +
                 "&limit=" + gifsQuantity +
                 "&offset=" + searchOffset +
