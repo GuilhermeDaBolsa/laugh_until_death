@@ -11,8 +11,6 @@
 				:creator="gif.username"
 				:gifSrc="gif.images.downsized.url"
 				@click="selectGif(gif)"
-				@like="likeGif(gif)"
-				@unlike="unlikeGif(gif)"
 			/>
 		</div>
 	</div>
@@ -60,12 +58,6 @@ export default {
 		selectGif(gif) {
 			this.$emit("gifSelect", gif);
 		},
-		likeGif(gif) {
-			this.$emit("gifLike", gif);
-		},
-		unlikeGif(gif) {
-			this.$emit("gifUnlike", gif);
-		}
 	},
 	mounted() {
 		this.bottomScrollCheck({target: this.$refs.list});
