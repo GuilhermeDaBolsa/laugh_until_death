@@ -7,16 +7,17 @@
 
 		<div class="ui huge header">Procure por gifs</div>
 
-		<div class="ui fluid action input" style="margin-bottom: 12px;">
+		<div class="ui fluid action inverted transparent input" style="margin-bottom: 12px;">
 			<input 
 				ref="gifNameInputField"
 				v-model="gifSearchInput"
 				type="text" 
 				placeholder="Ex.:  estrela negra" 
+				style="border-color: #adadad !important; border-width: 0px; border-bottom-width: 1px; border-style: solid;"
 				@keydown.enter="makeNewGifSearch(gifSearchInput)"
 			>
 
-			<div class="ui button" @click="makeNewGifSearch(gifSearchInput)">Buscar</div>
+			<div class="ui inverted black button" @click="makeNewGifSearch(gifSearchInput)">Buscar</div>
 		</div>
 
 		<FlexBox v-if="loadingNewGifs">
@@ -43,12 +44,12 @@
 			Digite algo no campo acima e precione buscar para começar a utilizar 😎
 		</FlexBox>
 
-		<div v-show="loadingMoreGifs">
+		<div v-if="loadingMoreGifs">
 			<div class="ui active inline loader"></div>
 			<div>Carregando...</div>
 		</div>
 
-		<div v-show="errorMessageLoadingMoreGifs">
+		<div v-else-if="errorMessageLoadingMoreGifs">
 			<i class="large red exclamation triangle icon"></i> {{errorMessageLoadingMoreGifs}}
 		</div>
 
